@@ -93,7 +93,7 @@ public class EntityStubGenerator {
 				clz._extends(BaseEntity.class);
 				
 				//JFieldVar fieldCtx = clz.field(JMod.STATIC, String.class, "_CONTEXT", JExpr.lit(subPackage));
-				JFieldVar fieldEntity = clz.field(JMod.STATIC, String.class, "_ENTITY_NAME", JExpr.lit(entity.getName()));
+				JFieldVar fieldEntity = clz.field(JMod.STATIC | JMod.PUBLIC, String.class, "_ENTITY_NAME", JExpr.lit(entity.getName()));
 				//JFieldVar fieldFullEn = clz.field(JMod.STATIC, String.class, "_FULL_ENTITY_NAME", JExpr.lit(simpleName));
 
 				//clz.method(JMod.PUBLIC, String.class, "getContext").body()._return(fieldCtx);

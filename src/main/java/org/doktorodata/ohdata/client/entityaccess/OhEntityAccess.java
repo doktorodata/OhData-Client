@@ -205,7 +205,8 @@ public class OhEntityAccess<T extends BaseEntity> {
 		for (String key : keys) {
 			Method m = BaseEntityTools.getSetterMethod(clz, key);
 			if(m != null){
-				Object value = odEntry.getProperties().get(key); 
+				Object value = odEntry.getProperties().get(key);
+				System.out.println(entry.getEntityName() + " " + value + "-" + m.getName()+ "\n");
 				m.invoke(entry, value);
 			}
 		}
