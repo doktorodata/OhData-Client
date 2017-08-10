@@ -16,11 +16,13 @@ import org.apache.olingo.odata2.api.edm.EdmProperty;
 import org.apache.olingo.odata2.api.edm.EdmTyped;
 import org.doktorodata.ohdata.client.base.OhClient;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
+import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
 import org.doktorodata.ohdata.client.exceptions.ConnectionFactoryException;
 import org.doktorodata.ohdata.client.exceptions.OhDataCallException;
 import org.doktorodata.ohdata.client.exceptions.StubGenerationException;
 import org.doktorodata.ohdata.connectivity.ConnectionFactory;
 
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -28,6 +30,7 @@ import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JVar;
 
 /**
  * 
@@ -36,10 +39,11 @@ import com.sun.codemodel.JMod;
  */
 public class EntityStubGenerator {
 
+	public static final String SUB_PACKAGE = "entities";
+	
 	private String localFolder;
 	private String basePackage;
 	private String destination;
-	private String underscoreSplitLetter = null;
 
 	public EntityStubGenerator(String basePackage, String destination) {
 		this.localFolder = ".";
@@ -67,30 +71,14 @@ public class EntityStubGenerator {
 		List<EdmEntitySet> es = edm.getDefaultEntityContainer().getEntitySets();
 
 		JCodeModel cm = new JCodeModel();	
+		JClass betools = cm.ref(BaseEntityTools.class);
+		
 		
 		for (EdmEntitySet entity : es) {
 			entity.getEntityType();
 			
-			String simpleName = entity.getName();
-			String subPackage = "";
-			
-			if(underscoreSplitLetter != null){
-				
-				String[] splits = simpleName.split(underscoreSplitLetter);
-				for(int i = 0; i < splits.length-1; i++){
-					subPackage += splits[i] + ".";
-				}
-				subPackage.substring(0,subPackage.length()-1);
-				simpleName = splits[splits.length-1];				
-			}
-			
-			
-			if(Character.isDigit(simpleName.charAt(0))){
-				simpleName = "_" + simpleName;
-			}
-			
-			
-			String fullPackage = basePackage + "." +  subPackage.replaceAll("\\_", "\\.");	
+			String simpleName = entity.getName();			
+			String fullPackage = basePackage + "." +  SUB_PACKAGE;	
 			
 			if(fullPackage.endsWith("."))
 				fullPackage = fullPackage.substring(0, fullPackage.length()-1);
@@ -104,13 +92,13 @@ public class EntityStubGenerator {
 				clz.annotate(Generated.class).param("value", "DoktorOData - OhData-Client");
 				clz._extends(BaseEntity.class);
 				
-				JFieldVar fieldCtx = clz.field(JMod.STATIC, String.class, "_CONTEXT", JExpr.lit(subPackage));
+				//JFieldVar fieldCtx = clz.field(JMod.STATIC, String.class, "_CONTEXT", JExpr.lit(subPackage));
 				JFieldVar fieldEntity = clz.field(JMod.STATIC, String.class, "_ENTITY_NAME", JExpr.lit(entity.getName()));
-				JFieldVar fieldFullEn = clz.field(JMod.STATIC, String.class, "_FULL_ENTITY_NAME", JExpr.lit(simpleName));
+				//JFieldVar fieldFullEn = clz.field(JMod.STATIC, String.class, "_FULL_ENTITY_NAME", JExpr.lit(simpleName));
 
-				clz.method(JMod.PUBLIC, String.class, "getContext").body()._return(fieldCtx);
+				//clz.method(JMod.PUBLIC, String.class, "getContext").body()._return(fieldCtx);
 				clz.method(JMod.PUBLIC, String.class, "getEntityName").body()._return(fieldEntity);
-				clz.method(JMod.PUBLIC, String.class, "getFullEntityName").body()._return(fieldFullEn);
+				//clz.method(JMod.PUBLIC, String.class, "getFullEntityName").body()._return(fieldFullEn);
 			
 				//Keep the properties
 				HashMap<String, JFieldVar> propFields = new HashMap<String, JFieldVar>();
@@ -175,18 +163,20 @@ public class EntityStubGenerator {
 				if(keyProps.size() == 1){
 					EdmProperty keyProp = keyProps.get(0);	
 					String name = keyProp.getName();
-					methKey.body()._return(JExpr.direct("convertString(" + name + ")"));
+					//JFieldVar field = clz.fields().get(name);
+					methKey.body()._return(betools.staticInvoke("convertToString").arg(JExpr.direct(name)));
 				} else if(keyProps.size() > 1) {
-					StringBuilder sb = new StringBuilder();					
+					JVar keyString = methKey.body().decl(cm.ref(String.class), "_key", JExpr.lit(""));
 					for (int i = 0; i < keyProps.size(); i++) {
 						EdmProperty keyProp = keyProps.get(i);
-						String name = keyProp.getName();
-						sb.append("\"" + name + "=\" + convertString(" + name + ")" );
-						if(i < keyProps.size()-1){
-							sb.append("+\",\"+");
+						String keyName = keyProp.getName();
+						if(i == 0){
+							methKey.body().assign(keyString, JExpr.lit(keyName).plus(JExpr.lit("=")).plus(betools.staticInvoke("convertToString").arg(JExpr.direct(keyName))));
+						} else {
+							methKey.body().assign(keyString, keyString.plus(JExpr.lit(",").plus(JExpr.lit(keyName).plus(JExpr.lit("=")).plus(betools.staticInvoke("convertToString").arg(JExpr.direct(keyName))))));
 						}
 					} 
-					methKey.body()._return(JExpr.direct(sb.toString()));
+					methKey.body()._return(keyString);
 				} else {
 					throw new StubGenerationException("Entity has no key property / currently not supported");
 				}
