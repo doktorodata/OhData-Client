@@ -75,4 +75,8 @@ public class BaseEntityTools {
 		return false;
 	}
 	
+	public static String convertToString(Object any) {
+		return "" + any;
+	}
+	
 }

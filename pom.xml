@@ -11,10 +11,6 @@
 		<version.cxf>2.7.6</version.cxf>
 		<version.slf4j>1.7.1</version.slf4j>
 		<version.olingo>2.0.7</version.olingo>
-	    <swagger-core-version>1.5.9</swagger-core-version>
-	    <okhttp-version>2.7.5</okhttp-version>
-	    <gson-version>2.6.2</gson-version>
-	    <jodatime-version>2.9.3</jodatime-version>
 	</properties>
 
 	
@@ -58,23 +54,18 @@
 			<version>${version.slf4j}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- 
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${version.slf4j}</version>
 		</dependency>
-		-->
+		
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
 		</dependency> 
-		<dependency>
-	      <groupId>joda-time</groupId>
-	      <artifactId>joda-time</artifactId>
-	      <version>${jodatime-version}</version>
-	    </dependency>
 	    
 		<dependency>
 		    <groupId>com.sun.codemodel</groupId>

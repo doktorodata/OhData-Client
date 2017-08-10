@@ -11,6 +11,7 @@ public class OhEntityAccessFactory {
 	private String urlPath;
 	private String defaultWritingDomain;
 
+	
 	public static OhEntityAccessFactory createwithConnection(ConnectionFactory cf, String urlPath){
 		return new OhEntityAccessFactory(cf, urlPath);
 	}
