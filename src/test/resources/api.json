@@ -6,7 +6,7 @@
 				"type": "getbyid"
 			},
 			{
-				"name": "getProductsWithPriceHigherThan",
+				"name": "getProductsWithPriceRange",
 				"type": "query",
 				"return": "iterator",
 				"filters": [{
@@ -25,7 +25,15 @@
 				"type": "query",
 				"filters": [{
 					"property": "ProductName",
-					"operator": "like"
+					"operator": "eq"
+				}]
+			},{
+				"name": "getOrdersOfProduct",
+				"entity" : "Order_Details",
+				"type": "query",
+				"filters": [{
+					"property": "ProductID",
+					"operator": "eq"
 				}]
 			}
 		]

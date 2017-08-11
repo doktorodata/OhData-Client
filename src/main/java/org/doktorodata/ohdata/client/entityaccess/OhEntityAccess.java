@@ -72,7 +72,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 		return get(entry.getKey());
 	}
 	
-	public OhEntityResult<T> get(String key) throws OhEntityAccessException {
+	public OhEntityResult<T> get(Object key) throws OhEntityAccessException {
 			
 		try{
 			
@@ -127,7 +127,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 			
 			JSONObject jsonData = BaseEntityTools.convertToJSONObject(clz, entry);			
 			String entityName = getEntityName();
-			String key = entry.getKey();
+			Object key = entry.getKey();
 			OhResult result = oeaf.getODataCaller().updateEntry(entityName, key, jsonData);
 			OhEntityResult<T> entityResult = new OhEntityResult<T>(result);
 			entityResult.setEntry(mapEntity(result.getEntry()));
@@ -147,7 +147,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 			//TODO: Inject determinations / validations
 			
 			String entityName = getEntityName();
-			String key = entry.getKey();
+			Object key = entry.getKey();
 			
 			OhResult readResult = oeaf.getODataCaller().readEntry(entityName, key);
 			OhResult writeResult;
@@ -173,7 +173,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 		 
 		try {
 			String entityName = getEntityName();
-			String key = entry.getKey();
+			Object key = entry.getKey();
 			OhResult deleteResult = oeaf.getODataCaller().deleteEntry(entityName, key);
 			
 			OhEntityResult<T> entityResult = new OhEntityResult<T>(deleteResult);

@@ -1,6 +1,7 @@
 package org.doktorodata.ohdata.client.base;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,6 +88,20 @@ public class OhQuery {
 	}
 	
 	public OhQuery filter(String field, String operator, double value){
+		checkFilterDelimition();
+		String filter = field + " " + operator + " " + value;
+		filters.add(filter);
+		return this;
+	}
+	
+	public OhQuery filter(String field, String operator, BigDecimal value){
+		checkFilterDelimition();
+		String filter = field + " " + operator + " " + value;
+		filters.add(filter);
+		return this;
+	}
+	
+	public OhQuery filter(String field, String operator, Short value){
 		checkFilterDelimition();
 		String filter = field + " " + operator + " " + value;
 		filters.add(filter);

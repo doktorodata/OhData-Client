@@ -11,6 +11,7 @@ import org.apache.olingo.odata2.api.edm.EdmException;
 import org.doktorodata.ohdata.client.exceptions.ConnectionFactoryException;
 import org.doktorodata.ohdata.client.exceptions.OhDataCallException;
 import org.doktorodata.ohdata.client.exceptions.OhEntityAccessException;
+import org.doktorodata.ohdata.client.exceptions.OhFeatureNotYetSupported;
 import org.doktorodata.ohdata.client.exceptions.StubGenerationException;
 import org.doktorodata.ohdata.client.tools.apigeneration.APIGenerator;
 import org.doktorodata.ohdata.client.tools.stubgeneration.EntityStubGenerator;
@@ -34,7 +35,7 @@ public class APIGenerationTest {
 	private static final String[] entitiesToGenerate = {"Products", "Customers"};
 	
 	@Before
-	public void generate() throws EdmException, StubGenerationException, ConnectionFactoryException, OhDataCallException, IOException, JClassAlreadyExistsException, ClassNotFoundException, OhEntityAccessException{
+	public void generate() throws EdmException, StubGenerationException, ConnectionFactoryException, OhDataCallException, IOException, JClassAlreadyExistsException, ClassNotFoundException, OhEntityAccessException, OhFeatureNotYetSupported{
 		EntityStubGenerator pocoGen = new EntityStubGenerator(basePackage, destination, basePath);
 		pocoGen.setEntitiesToGenerate(entitiesToGenerate);
 		pocoGen.generateEntityStubs();
