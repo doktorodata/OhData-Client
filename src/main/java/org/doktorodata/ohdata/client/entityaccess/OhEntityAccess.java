@@ -198,7 +198,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 
 	
 		
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private T mapEntity(ODataEntry odEntry) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		Set<String> keys = odEntry.getProperties().keySet();
 		T entry = (T)clz.newInstance();		
@@ -206,9 +206,8 @@ public class OhEntityAccess<T extends BaseEntity> {
 			Method m = BaseEntityTools.getSetterMethod(clz, key);
 			if(m != null){
 				Object value = odEntry.getProperties().get(key);
-				System.out.println(entry.getEntityName() + " " + value + "-" + m.getName()+ "\n");
 				m.invoke(entry, value);
-			}
+			} 
 		}
 		return entry;
 	}

@@ -8,16 +8,16 @@
 			{
 				"name": "getProductsWithPriceHigherThan",
 				"type": "query",
-				"return": "iterator"
+				"return": "iterator",
 				"filters": [{
-					"name":"minPrice"
+					"name":"minPrice",
 					"property": "UnitPrice",
-					"operator": ">"
+					"operator": "gt"
 				},
-				{
-					"name":"maxPrice"
+				{ 
+					"name":"maxPrice",
 					"property": "UnitPrice",
-					"operator": "<"
+					"operator": "lt"
 				}]
 			},
 			{
@@ -25,7 +25,7 @@
 				"type": "query",
 				"filters": [{
 					"property": "ProductName",
-					"operator": "LIKE"
+					"operator": "like"
 				}]
 			}
 		]

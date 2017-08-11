@@ -27,7 +27,6 @@ import org.doktorodata.ohdata.client.exceptions.OhEntityAccessException;
 import org.doktorodata.ohdata.client.exceptions.StubGenerationException;
 import org.doktorodata.ohdata.client.tools.stubgeneration.EntityStubGenerator;
 import org.doktorodata.ohdata.connectivity.ConnectionFactory;
-import org.doktorodata.ohdata.util.Json2JavaTypes;
 import org.doktorodata.ohdata.util.StreamAndStringTools;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,7 +77,7 @@ public class APIGenerator {
 		
 				
 		//Load file with API definition
-		FileInputStream fis = new FileInputStream("src/main/resources/" + apiDefinitionFile);
+		FileInputStream fis = new FileInputStream(apiDefinitionFile);
 		String content = StreamAndStringTools.toString(fis, "UTF-8");
 		fis.close();
 		JSONObject apiDefs = new JSONObject(content);
@@ -161,8 +160,8 @@ public class APIGenerator {
 			for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
 				EdmProperty key = (EdmProperty) iterator.next();
 				String keyName = key.getName();
-				System.out.println(keyName);
-				Class typeClz = Json2JavaTypes.getClassTypeForJSONType(key.getType().getName());
+
+				Class typeClz = BaseEntityTools.getClassTypeForJSONType(key.getType().getName());
 				
 				//Create param
 				JVar keyVar = method.param(typeClz, keyName);
@@ -235,14 +234,13 @@ public class APIGenerator {
 		}
 		
 		EdmTyped property = es.getEntityType().getProperty(propertyName);
-		Class clzType = Json2JavaTypes.getClassTypeForJSONType(property.getType().getName());
+		Class clzType = BaseEntityTools.getClassTypeForJSONType(property.getType().getName());
 		
 		
 		//Add the parameter 
 		JVar param = method.param(clzType, paramName);
 		method.body().invoke(ohQuery, "filter").arg(propertyName).arg(operator).arg(param);
-		
-
+	
 	}
 
 	private static String firstUpper(String name) {

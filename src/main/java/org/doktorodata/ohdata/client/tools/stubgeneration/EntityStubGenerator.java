@@ -2,8 +2,6 @@ package org.doktorodata.ohdata.client.tools.stubgeneration;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,6 +42,7 @@ public class EntityStubGenerator {
 	private String localFolder;
 	private String basePackage;
 	private String destination;
+	private String[] entitiesToGen = null;
 
 	public EntityStubGenerator(String basePackage, String destination) {
 		this.localFolder = ".";
@@ -55,6 +54,10 @@ public class EntityStubGenerator {
 		this.basePackage = basePackage;
 		this.localFolder = localFolder;
 		this.destination = destination;
+	}
+	
+	public void setEntitiesToGenerate(String[] entities){
+		this.entitiesToGen = entities;
 	}
 
 	public void generateEntityStubs() throws StubGenerationException, ConnectionFactoryException, EdmException, OhDataCallException, IOException, JClassAlreadyExistsException{
@@ -77,7 +80,11 @@ public class EntityStubGenerator {
 		for (EdmEntitySet entity : es) {
 			entity.getEntityType();
 			
-			String simpleName = entity.getName();			
+			String simpleName = entity.getName();	
+			
+			if(!shallBeGenerated(simpleName))
+				continue;
+			
 			String fullPackage = basePackage + "." +  SUB_PACKAGE;	
 			
 			if(fullPackage.endsWith("."))
@@ -110,39 +117,7 @@ public class EntityStubGenerator {
 					String name = prop.getName();
 
 					@SuppressWarnings("rawtypes")
-					Class typeClz = null;
-					
-					if(prop.getType().getName().contains("Int32")){
-						
-						typeClz = Integer.class;
-					} else if(prop.getType().getName().contains("Int64")){
-						
-						typeClz = BigInteger.class;
-					} else if(prop.getType().getName().contains("Single")){
-							
-						typeClz = Float.class;
-					}  else if(prop.getType().getName().contains("DateTime")){
-						
-						typeClz = GregorianCalendar.class;
-					}  else if(prop.getType().getName().contains("Decimal")){
-						
-						typeClz = Double.class;
-					}  else if(prop.getType().getName().contains("Int16")){
-						
-						typeClz = Integer.class;
-					}  else if(prop.getType().getName().contains("Binary")){
-						
-						typeClz = byte[].class;
-					}  else if(prop.getType().getName().contains("String")){
-						
-						typeClz = String.class;
-					}  else if(prop.getType().getName().contains("Boolean")){
-						
-						typeClz = Boolean.class;
-					} else {
-						throw new StubGenerationException("EDM Datatype currently not supported, needs to be added, create issue for type " + prop.getType());
-					}
-					
+					Class typeClz = BaseEntityTools.getClassTypeForJSONType(prop.getType().getName());					
 					JFieldVar fieldProp = clz.field(JMod.PRIVATE, typeClz, name, null);
 					JMethod methGet = clz.method(JMod.PUBLIC, typeClz, "get"+ EntityStubGenerator.firstUpper(name));
 					methGet.body()._return(fieldProp);
@@ -191,6 +166,18 @@ public class EntityStubGenerator {
 		file.mkdirs();
 		cm.build(file);
 		
+	}
+
+	private boolean shallBeGenerated(String simpleName) {
+		if(entitiesToGen == null)
+			return true;
+		
+		for (int i = 0; i < entitiesToGen.length; i++) {
+			if(entitiesToGen[i].equals(simpleName)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static String firstUpper(String name) {

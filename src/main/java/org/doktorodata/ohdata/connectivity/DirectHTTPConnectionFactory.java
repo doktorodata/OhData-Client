@@ -31,7 +31,7 @@ public class DirectHTTPConnectionFactory extends ConnectionFactory {
 	public DirectHTTPConnectionFactory(String destname) throws ConnectionFactoryException {
 		try {
 			prop = new Properties();
-			File f = new File("src/main/resources/" + destname + ".destination");
+			File f = new File(destname);
 			
 			FileInputStream fis = new FileInputStream(f);
 			prop.load(fis);
