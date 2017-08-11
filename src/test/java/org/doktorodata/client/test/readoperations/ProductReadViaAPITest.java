@@ -14,7 +14,7 @@ import org.doktorodata.ohdata.client.exceptions.ConnectionFactoryException;
 import org.doktorodata.ohdata.client.exceptions.OhEntityAccessException;
 import org.junit.Test;
 
-public class ProductReadTest {
+public class ProductReadViaAPITest {
 
 	private static final String destination = "src/test/resources/Northwind.destination";
 	private static String productName = "Aniseed Syrup";

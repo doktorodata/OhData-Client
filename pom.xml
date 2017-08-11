@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.doktorodata.ohdata</groupId>
 	<artifactId>OhData-Client</artifactId>
-	<version>0.5.0</version>
+	<version>0.8.0</version>
 	<name>OhData Client Library provided by Dr. OData</name>
 	
 	<properties>

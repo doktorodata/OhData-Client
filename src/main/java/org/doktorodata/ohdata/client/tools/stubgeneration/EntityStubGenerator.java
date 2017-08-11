@@ -12,7 +12,7 @@ import org.apache.olingo.odata2.api.edm.EdmEntitySet;
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.edm.EdmProperty;
 import org.apache.olingo.odata2.api.edm.EdmTyped;
-import org.doktorodata.ohdata.client.base.OhClient;
+import org.doktorodata.ohdata.client.base.OhCaller;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
 import org.doktorodata.ohdata.client.exceptions.ConnectionFactoryException;
@@ -68,7 +68,7 @@ public class EntityStubGenerator {
 	
 		String backendPath = path;
 		ConnectionFactory cf = ConnectionFactory.createFactory(destination);
-		OhClient vda = new OhClient(cf, backendPath);
+		OhCaller vda = new OhCaller(cf, backendPath);
 		
 		Edm edm = vda.readEdm();
 		List<EdmEntitySet> es = edm.getDefaultEntityContainer().getEntitySets();

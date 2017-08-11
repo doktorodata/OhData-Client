@@ -15,6 +15,9 @@ public abstract class ConnectionFactory {
 	}
 	
 	public static ConnectionFactory createFactory(String destname) throws ConnectionFactoryException{
+		
+		//TODO: Keep instance per destname and don't create a new one.
+		
 		try {
 				return new DirectHTTPConnectionFactory(destname); 
 		} catch(Exception e){
