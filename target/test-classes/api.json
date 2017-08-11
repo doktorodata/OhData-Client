@@ -6,18 +6,18 @@
 				"type": "getbyid"
 			},
 			{
-				"name": "getProductsWithPriceHigherThan",
+				"name": "getProductsWithPriceRange",
 				"type": "query",
 				"return": "iterator",
 				"filters": [{
 					"name":"minPrice",
 					"property": "UnitPrice",
-					"operator": ">"
+					"operator": "gt"
 				},
-				{
+				{ 
 					"name":"maxPrice",
 					"property": "UnitPrice",
-					"operator": "<"
+					"operator": "lt"
 				}]
 			},
 			{
@@ -25,7 +25,15 @@
 				"type": "query",
 				"filters": [{
 					"property": "ProductName",
-					"operator": "LIKE"
+					"operator": "eq"
+				}]
+			},{
+				"name": "getOrdersOfProduct",
+				"entity" : "Order_Details",
+				"type": "query",
+				"filters": [{
+					"property": "ProductID",
+					"operator": "eq"
 				}]
 			}
 		]

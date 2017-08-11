@@ -163,11 +163,11 @@ public class OhClient {
 
 	}
 
-	public OhResult readEntry(String entitySetName, String keyValue) throws OhDataCallException {
+	public OhResult readEntry(String entitySetName, Object keyValue) throws OhDataCallException {
 		return readEntry(entitySetName, keyValue, null);
 	}
 
-	public OhResult readEntry(String entitySetName, String keyValue, OhQuery query)
+	public OhResult readEntry(String entitySetName, Object keyValue, OhQuery query)
 			throws OhDataCallException {
 		try {
 			Edm edm = readEdm();
@@ -290,7 +290,7 @@ public class OhClient {
 		return errorText;
 	}
 
-	public OhResult updateEntry(String entitySetName, String id, JSONObject json) throws OhDataCallException {
+	public OhResult updateEntry(String entitySetName, Object id, JSONObject json) throws OhDataCallException {
 
 		try {
 
@@ -355,7 +355,7 @@ public class OhClient {
 		}
 	}
 
-	public OhResult deleteEntry(String entityName, String id) throws OhDataCallException {
+	public OhResult deleteEntry(String entityName, Object id) throws OhDataCallException {
 		try {
 			String serviceUri = urlPath;
 			String absolutUri = createUri(serviceUri, entityName, id);
@@ -403,17 +403,21 @@ public class OhClient {
 				+ connection.getResponseMessage() + " with error details " + errorText);
 	}
 
-	private String createUri(String serviceUri, String entitySetName, String id) throws UnsupportedEncodingException {
+	private String createUri(String serviceUri, String entitySetName, Object id) throws UnsupportedEncodingException {
 		return createUri(serviceUri, entitySetName, id, null);
 	}
 
-	private String createUri(String serviceUri, String entitySetName, String id, OhQuery query) throws UnsupportedEncodingException {
+	private String createUri(String serviceUri, String entitySetName, Object id, OhQuery query) throws UnsupportedEncodingException {
 
 		
 		final StringBuilder absolutUri = new StringBuilder(serviceUri).append(SEPARATOR).append(entitySetName);
 		if (id != null) {
-			id = URLEncoder.encode(id, "UTF-8");
-			absolutUri.append("('").append(id).append("')");
+			if(id instanceof String){
+				id = URLEncoder.encode((String)id, "UTF-8");
+				absolutUri.append("('").append(id).append("')");
+			} else {
+				absolutUri.append("(").append(id).append(")");
+			}
 		}
 		
 		if(query != null){
