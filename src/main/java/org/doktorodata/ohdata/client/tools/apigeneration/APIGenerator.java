@@ -77,11 +77,9 @@ public class APIGenerator {
 		this.betools = cm.ref(BaseEntityTools.class);
 				
 		//Load file with API definition
-		FileInputStream fis = new FileInputStream(apiDefinitionFile);
-		String content = StreamAndStringTools.toString(fis, "UTF-8");
-		fis.close();
-		JSONObject apiDefs = new JSONObject(content);
-		
+		APIDefinitonLoader loader = new APIDefinitonLoader(apiDefinitionFile);
+		JSONObject apiDefs = loader.loadDefinition();
+	
 		//Start iterating the API
 		Iterator<String> apiIterator = apiDefs.keys();
 		while (apiIterator.hasNext()) {

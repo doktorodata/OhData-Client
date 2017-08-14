@@ -1,4 +1,4 @@
-package org.doktorodata.client.test.apigen;
+package org.doktorodata.client.test.northwind.apigen;
 
 import java.io.File;
 import java.io.FileNotFoundException;

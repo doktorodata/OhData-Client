@@ -8,9 +8,12 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.apache.olingo.odata2.api.edm.Edm;
+import org.apache.olingo.odata2.api.edm.EdmComplexType;
 import org.apache.olingo.odata2.api.edm.EdmEntitySet;
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.edm.EdmProperty;
+import org.apache.olingo.odata2.api.edm.EdmStructuralType;
+import org.apache.olingo.odata2.api.edm.EdmTypeKind;
 import org.apache.olingo.odata2.api.edm.EdmTyped;
 import org.doktorodata.ohdata.client.base.OhCaller;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
@@ -111,24 +114,7 @@ public class EntityStubGenerator {
 				HashMap<String, JFieldVar> propFields = new HashMap<String, JFieldVar>();
 				
 				//Write the properties
-				List<String> props = entity.getEntityType().getPropertyNames();
-				for (String propName : props) {
-					EdmTyped prop = entity.getEntityType().getProperty(propName);
-					String name = prop.getName();
-
-					@SuppressWarnings("rawtypes")
-					Class typeClz = BaseEntityTools.getClassTypeForJSONType(prop.getType().getName());					
-					JFieldVar fieldProp = clz.field(JMod.PRIVATE, typeClz, name, null);
-					JMethod methGet = clz.method(JMod.PUBLIC, typeClz, "get"+ EntityStubGenerator.firstUpper(name));
-					methGet.body()._return(fieldProp);
-					
-					JMethod methSet = clz.method(JMod.PUBLIC, Void.TYPE, "set"+ EntityStubGenerator.firstUpper(name));
-					methSet.body().assign(fieldProp, methSet.param(typeClz, "_" + name));
-
-					propFields.put(name, fieldProp);
-					
-				}
-				
+				generateProperties(entity.getEntityType(), clz, cm, edm, propFields, "");
 				
 				//Write the key method
 				JMethod methKey = clz.method(JMod.PUBLIC, String.class, "getKey");
@@ -166,6 +152,35 @@ public class EntityStubGenerator {
 		file.mkdirs();
 		cm.build(file);
 		
+	}
+
+	private void generateProperties(EdmStructuralType type, JDefinedClass clz, JCodeModel cm, Edm edm, HashMap<String, JFieldVar> propFields, String prefix) throws EdmException, StubGenerationException {
+		
+		List<String> props = type.getPropertyNames();
+		for (String propName : props) {
+			EdmTyped prop = type.getProperty(propName);
+			String name = prefix + prop.getName();
+
+			
+			if(prop.getType().getKind() == EdmTypeKind.SIMPLE){
+	
+				Class typeClz = BaseEntityTools.getClassTypeForJSONType(prop.getType().getName());
+				
+				JFieldVar fieldProp = clz.field(JMod.PRIVATE, typeClz, name, null);
+				JMethod methGet = clz.method(JMod.PUBLIC, typeClz, "get"+ EntityStubGenerator.firstUpper(name));
+				methGet.body()._return(fieldProp);
+				
+				JMethod methSet = clz.method(JMod.PUBLIC, Void.TYPE, "set"+ EntityStubGenerator.firstUpper(name));
+				methSet.body().assign(fieldProp, methSet.param(typeClz, "_" + name));
+	
+				propFields.put(name, fieldProp);
+			
+			} else if(prop.getType().getKind() == EdmTypeKind.COMPLEX){
+				EdmComplexType cplxType = edm.getComplexType(prop.getType().getNamespace(), prop.getType().getName());
+				generateProperties(cplxType, clz, cm, edm, propFields, prefix + prop.getType().getName()+ "_");
+			}
+			
+		}
 	}
 
 	private boolean shallBeGenerated(String simpleName) {

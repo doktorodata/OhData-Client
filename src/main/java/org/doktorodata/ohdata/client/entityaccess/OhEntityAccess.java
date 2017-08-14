@@ -3,9 +3,11 @@ package org.doktorodata.ohdata.client.entityaccess;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.olingo.odata2.api.edm.EdmTyped;
 import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
 import org.apache.olingo.odata2.api.ep.feed.ODataFeed;
 import org.doktorodata.ohdata.client.base.OhCallerFactory;
@@ -204,13 +206,30 @@ public class OhEntityAccess<T extends BaseEntity> {
 		Set<String> keys = odEntry.getProperties().keySet();
 		T entry = (T)clz.newInstance();		
 		for (String key : keys) {
-			Method m = BaseEntityTools.getSetterMethod(clz, key);
-			if(m != null){
-				Object value = odEntry.getProperties().get(key);
-				m.invoke(entry, value);
-			} 
+			Object value = odEntry.getProperties().get(key);
+			mapValue(entry, key, value);
 		}
 		return entry;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void mapValue(T entry, String key, Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		Method m = BaseEntityTools.getSetterMethod(clz, key);
+		if(m != null){
+			m.invoke(entry, value);
+		}  else {
+			if(value instanceof HashMap){
+				HashMap<String, Object> cplxTypeValues = (HashMap<String, Object>) value;
+				Set<String> subKeys = cplxTypeValues.keySet();
+				for (String subKey : subKeys) {
+					mapValue(entry, key + "_" + subKey, cplxTypeValues.get(subKey));
+				}
+			} else {
+				System.out.println("Method for " + key + " not found - " + value.getClass());	
+			}
+			
+		}
 	}
 
 	public void queryAsync(OhQuery query, OhEntityCallback<T> callback) {	

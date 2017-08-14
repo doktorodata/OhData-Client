@@ -1,4 +1,4 @@
-package org.doktorodata.client.test.readoperations;
+package org.doktorodata.client.test.northwind.read;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -6,9 +6,9 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.doktorodata.client.test.gen.api.ProductAPI;
-import org.doktorodata.client.test.gen.entities.Order_Details;
-import org.doktorodata.client.test.gen.entities.Products;
+import org.doktorodata.client.test.northwind.gen.api.ProductAPI;
+import org.doktorodata.client.test.northwind.gen.entities.Order_Details;
+import org.doktorodata.client.test.northwind.gen.entities.Products;
 import org.doktorodata.ohdata.client.entityaccess.OhEntityIterator;
 import org.doktorodata.ohdata.client.exceptions.ConnectionFactoryException;
 import org.doktorodata.ohdata.client.exceptions.OhEntityAccessException;
