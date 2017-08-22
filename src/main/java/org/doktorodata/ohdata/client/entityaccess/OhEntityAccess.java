@@ -3,11 +3,14 @@ package org.doktorodata.ohdata.client.entityaccess;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.olingo.odata2.api.edm.EdmTyped;
 import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
 import org.apache.olingo.odata2.api.ep.feed.ODataFeed;
+import org.doktorodata.ohdata.client.base.OhCallerFactory;
 import org.doktorodata.ohdata.client.base.OhQuery;
 import org.doktorodata.ohdata.client.base.OhResult;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
@@ -28,11 +31,11 @@ public class OhEntityAccess<T extends BaseEntity> {
 	private static String FIELDNAME_ENTITYNAME = "_ENTITY_NAME";
 	
 	private Class<? extends BaseEntity> clz;
-	private OhEntityAccessFactory oeaf;
+	private OhCallerFactory ocf;
 	
-	public OhEntityAccess(OhEntityAccessFactory oeaf, Class<? extends BaseEntity> clz){
+	public OhEntityAccess(OhCallerFactory ocf, Class<? extends BaseEntity> clz){
 		this.clz = clz;
-		this.oeaf = oeaf;
+		this.ocf = ocf;
 	}
 	
 	public OhEntityResult<T> query() throws OhEntityAccessException {
@@ -44,7 +47,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 		try{
 		
 			String entityName = getEntityName();
-			OhResult readResult = oeaf.getODataCaller().readFeed(entityName, query);
+			OhResult readResult = ocf.getODataCaller().readFeed(entityName, query);
 			OhEntityResult<T> result = new OhEntityResult<T>(readResult);
 						
 			if(readResult.isSuccess()){
@@ -77,7 +80,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 		try{
 			
 			String entityName = getEntityName();
-			OhResult readResult = oeaf.getODataCaller().readEntry(entityName, key);
+			OhResult readResult = ocf.getODataCaller().readEntry(entityName, key);
 			OhEntityResult<T> result = new OhEntityResult<T>(readResult);
 						
 			if(readResult.isSuccess()){
@@ -103,7 +106,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 			//TODO: Inject determinartions and validations
 			
 			String entityName = getEntityName();
-			OhResult result = oeaf.getODataCaller().createEntry(entityName, jsonData);
+			OhResult result = ocf.getODataCaller().createEntry(entityName, jsonData);
 			OhEntityResult<T> entityResult = new OhEntityResult<T>(result);
 			if(result.getEntry() != null){
 				entityResult.setEntry(mapEntity(result.getEntry()));
@@ -128,7 +131,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 			JSONObject jsonData = BaseEntityTools.convertToJSONObject(clz, entry);			
 			String entityName = getEntityName();
 			Object key = entry.getKey();
-			OhResult result = oeaf.getODataCaller().updateEntry(entityName, key, jsonData);
+			OhResult result = ocf.getODataCaller().updateEntry(entityName, key, jsonData);
 			OhEntityResult<T> entityResult = new OhEntityResult<T>(result);
 			entityResult.setEntry(mapEntity(result.getEntry()));
 			return entityResult;
@@ -149,13 +152,13 @@ public class OhEntityAccess<T extends BaseEntity> {
 			String entityName = getEntityName();
 			Object key = entry.getKey();
 			
-			OhResult readResult = oeaf.getODataCaller().readEntry(entityName, key);
+			OhResult readResult = ocf.getODataCaller().readEntry(entityName, key);
 			OhResult writeResult;
 			
 			if(readResult.getStatusCode() == OhResult.STATUS_ERROR_NOT_FOUND){
-				writeResult = oeaf.getODataCaller().createEntry(entityName, jsonData);
+				writeResult = ocf.getODataCaller().createEntry(entityName, jsonData);
 			} else if (readResult.getStatusCode() == OhResult.STATUS_READ_SUCCESS) {
-				writeResult = oeaf.getODataCaller().updateEntry(entityName, key, jsonData);
+				writeResult = ocf.getODataCaller().updateEntry(entityName, key, jsonData);
 			} else {
 				throw new OhEntityAccessException("Unknown status code " + readResult.getStatusCode() + " - " + readResult.getError());
 			}
@@ -174,7 +177,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 		try {
 			String entityName = getEntityName();
 			Object key = entry.getKey();
-			OhResult deleteResult = oeaf.getODataCaller().deleteEntry(entityName, key);
+			OhResult deleteResult = ocf.getODataCaller().deleteEntry(entityName, key);
 			
 			OhEntityResult<T> entityResult = new OhEntityResult<T>(deleteResult);
 			if(deleteResult.getEntry() != null){
@@ -198,18 +201,35 @@ public class OhEntityAccess<T extends BaseEntity> {
 
 	
 		
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	private T mapEntity(ODataEntry odEntry) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		Set<String> keys = odEntry.getProperties().keySet();
 		T entry = (T)clz.newInstance();		
 		for (String key : keys) {
-			Method m = BaseEntityTools.getSetterMethod(clz, key);
-			if(m != null){
-				Object value = odEntry.getProperties().get(key);
-				m.invoke(entry, value);
-			} 
+			Object value = odEntry.getProperties().get(key);
+			mapValue(entry, key, value);
 		}
 		return entry;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void mapValue(T entry, String key, Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		Method m = BaseEntityTools.getSetterMethod(clz, key);
+		if(m != null){
+			m.invoke(entry, value);
+		}  else {
+			if(value instanceof HashMap){
+				HashMap<String, Object> cplxTypeValues = (HashMap<String, Object>) value;
+				Set<String> subKeys = cplxTypeValues.keySet();
+				for (String subKey : subKeys) {
+					mapValue(entry, key + "_" + subKey, cplxTypeValues.get(subKey));
+				}
+			} else {
+				System.out.println("Method for " + key + " not found - " + value.getClass());	
+			}
+			
+		}
 	}
 
 	public void queryAsync(OhQuery query, OhEntityCallback<T> callback) {	

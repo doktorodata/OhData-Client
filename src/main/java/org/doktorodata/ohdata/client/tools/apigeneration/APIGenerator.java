@@ -14,10 +14,10 @@ import org.apache.olingo.odata2.api.edm.EdmEntitySet;
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.edm.EdmProperty;
 import org.apache.olingo.odata2.api.edm.EdmTyped;
-import org.doktorodata.ohdata.client.base.OhClient;
+import org.doktorodata.ohdata.client.base.OhCaller;
+import org.doktorodata.ohdata.client.base.OhCallerFactory;
 import org.doktorodata.ohdata.client.base.OhQuery;
 import org.doktorodata.ohdata.client.entityaccess.OhEntityAccess;
-import org.doktorodata.ohdata.client.entityaccess.OhEntityAccessFactory;
 import org.doktorodata.ohdata.client.entityaccess.OhEntityIterator;
 import org.doktorodata.ohdata.client.entityaccess.OhEntityResult;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
@@ -69,7 +69,7 @@ public class APIGenerator {
 		
 		//Contact OData Service
 		ConnectionFactory cf = ConnectionFactory.createFactory(destination);
-		OhClient vda = new OhClient(cf, path);
+		OhCaller vda = new OhCaller(cf, path);
 		Edm edm = vda.readEdm();
 		
 		//Initialize Code Generator
@@ -77,11 +77,9 @@ public class APIGenerator {
 		this.betools = cm.ref(BaseEntityTools.class);
 				
 		//Load file with API definition
-		FileInputStream fis = new FileInputStream(apiDefinitionFile);
-		String content = StreamAndStringTools.toString(fis, "UTF-8");
-		fis.close();
-		JSONObject apiDefs = new JSONObject(content);
-		
+		APIDefinitonLoader loader = new APIDefinitonLoader(apiDefinitionFile);
+		JSONObject apiDefs = loader.loadDefinition();
+	
 		//Start iterating the API
 		Iterator<String> apiIterator = apiDefs.keys();
 		while (apiIterator.hasNext()) {
@@ -110,14 +108,17 @@ public class APIGenerator {
 				if(funcs.getJSONObject(i).has("entity"))
 					entityEAMap.put(funcs.getJSONObject(i).getString("entity"), null);
 			}
-				
+			
+			//Create CallerFactory
+			JClass callerFactoryClz = cm.ref(OhCallerFactory.class);
+			JVar callerFactory = clz.field(JMod.PRIVATE, callerFactoryClz, "callerFactory");
+			constrBody.assign(callerFactory, callerFactoryClz.staticInvoke("createWithDestination").arg(dest).arg(path));
+			
+			
 			//Create entity access factories for all entities in this api
 			Iterator<String> allEntityIt = entityEAMap.keySet().iterator();
 			while (allEntityIt.hasNext()) {
 				String entityInAPI = (String) allEntityIt.next();
-				JClass ohEAFClz = cm.ref(OhEntityAccessFactory.class);
-				JVar entityEAF = clz.field(JMod.PRIVATE, ohEAFClz, entityInAPI.toLowerCase() + "EAF");
-				constrBody.assign(entityEAF, ohEAFClz.staticInvoke("createWithDestination").arg(dest).arg(path));
 				
 				String fullClassName = basePackage + "." + EntityStubGenerator.SUB_PACKAGE + "." + firstUpper(entityInAPI);
 				JDefinedClass ohEntityClz = cm.anonymousClass(Class.forName(fullClassName)); 
@@ -125,7 +126,7 @@ public class APIGenerator {
 				JVar entityEA = clz.field(JMod.PRIVATE, ohEAClz, entityInAPI.toLowerCase() + "EA");
 				entityEAMap.put(entityInAPI, entityEA);
 				
-				constrBody.assign(entityEA, JExpr._new(ohEAClz).arg(entityEAF).arg(ohEntityClz.staticRef("class")));
+				constrBody.assign(entityEA, JExpr._new(ohEAClz).arg(callerFactory).arg(ohEntityClz.staticRef("class")));
 			}
 			
 			//Generate functions in sub method

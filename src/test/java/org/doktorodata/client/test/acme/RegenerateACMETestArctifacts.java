@@ -1,4 +1,4 @@
-package org.doktorodata.client.test;
+package org.doktorodata.client.test.acme;
 
 import java.io.IOException;
 
@@ -13,13 +13,13 @@ import org.doktorodata.ohdata.client.tools.stubgeneration.EntityStubGenerator;
 
 import com.sun.codemodel.JClassAlreadyExistsException;
 
-public class RegenerateTestArctifacts {
+public class RegenerateACMETestArctifacts {
 
-	private static final String basePackage = "org.doktorodata.client.test.gen";
+	private static final String basePackage = "org.doktorodata.client.test.acme.gen";
 	private static final String basePath = "./src/test/java";
-	private static final String destination = "src/test/resources/Northwind.destination";
-	private static final String apiConfiguration = "src/test/resources/api.json";
-	private static final String[] entitiesToCheck = {"Products", "Orders", "Order_Details"};
+	private static final String destination = "src/test/resources/ACME.destination";
+	private static final String apiConfiguration = "src/test/resources/ACMEApi.json";
+	private static final String[] entitiesToCheck = {"Products", "Suppliers", "Categories"};
 	
 	public static void main(String[] args) throws EdmException, StubGenerationException, ConnectionFactoryException, OhDataCallException, IOException, JClassAlreadyExistsException, ClassNotFoundException, OhEntityAccessException, OhFeatureNotYetSupported {
 		
@@ -27,8 +27,8 @@ public class RegenerateTestArctifacts {
 		pocoGen.setEntitiesToGenerate(entitiesToCheck);
 		pocoGen.generateEntityStubs();
 		
-		APIGenerator apiGen = new APIGenerator(basePackage, destination, basePath);		
-		apiGen.generateAPIClasses(apiConfiguration);
+//		APIGenerator apiGen = new APIGenerator(basePackage, destination, basePath);		
+//		apiGen.generateAPIClasses(apiConfiguration);
 		
 	}
 }

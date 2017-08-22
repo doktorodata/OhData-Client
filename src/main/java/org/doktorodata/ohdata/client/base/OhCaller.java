@@ -36,7 +36,7 @@ import org.json.JSONObject;
  * LowLevel Class that call OData services generically
  *
  */
-public class OhClient {
+public class OhCaller {
 
 	public static final String APPLICATION_JSON = "application/json";
 	public static final String APPLICATION_XML = "application/xml";
@@ -61,7 +61,7 @@ public class OhClient {
 	private Edm edm;
 	private CookieManager cookieMan;
 
-	public OhClient(ConnectionFactory cf, String urlPath) {
+	public OhCaller(ConnectionFactory cf, String urlPath) {
 		this.cf = cf;
 		this.urlPath = urlPath;
 		this.cookieMan = new CookieManager();
@@ -73,9 +73,7 @@ public class OhClient {
 		try {
 			if (this.edm == null) {
 				String content = executeGET(urlPath + "/$metadata", APPLICATION_XML);
-
 				InputStream is = StreamAndStringTools.toInputStream(content, "UTF-8");
-
 				this.edm = EntityProvider.readMetadata(is, false);
 			}
 
