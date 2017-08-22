@@ -1,6 +1,5 @@
 package org.doktorodata.client.test.acme.read;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.doktorodata.client.test.acme.gen.entities.Suppliers;

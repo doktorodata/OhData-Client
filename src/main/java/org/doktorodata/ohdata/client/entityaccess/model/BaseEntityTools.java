@@ -83,6 +83,7 @@ public class BaseEntityTools {
 	}
 
 	
+	@SuppressWarnings("rawtypes")
 	public static Class getClassTypeForJSONType(String jsonTypeName) throws StubGenerationException{
 		Class typeClz = null;
 		

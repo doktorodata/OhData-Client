@@ -164,6 +164,7 @@ public class EntityStubGenerator {
 			
 			if(prop.getType().getKind() == EdmTypeKind.SIMPLE){
 	
+				@SuppressWarnings("rawtypes")
 				Class typeClz = BaseEntityTools.getClassTypeForJSONType(prop.getType().getName());
 				
 				JFieldVar fieldProp = clz.field(JMod.PRIVATE, typeClz, name, null);
