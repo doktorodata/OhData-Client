@@ -1,7 +1,6 @@
 package org.doktorodata.client.test.northwind.read;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;

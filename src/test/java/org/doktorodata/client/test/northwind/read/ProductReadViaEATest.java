@@ -1,7 +1,5 @@
 package org.doktorodata.client.test.northwind.read;
 
-import java.math.BigDecimal;
-
 import junit.framework.Assert;
 
 import org.doktorodata.client.test.northwind.gen.entities.Products;

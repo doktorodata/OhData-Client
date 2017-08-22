@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.olingo.odata2.api.edm.EdmTyped;
 import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
 import org.apache.olingo.odata2.api.ep.feed.ODataFeed;
 import org.doktorodata.ohdata.client.base.OhCallerFactory;
