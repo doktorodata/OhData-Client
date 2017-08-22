@@ -13,11 +13,11 @@ public class Suppliers
     public static String _ENTITY_NAME = "Suppliers";
     private Integer ID;
     private String Name;
-    private String AddressStreet;
-    private String AddressCity;
-    private String AddressState;
-    private String AddressZipCode;
-    private String AddressCountry;
+    private String Address_Street;
+    private String Address_City;
+    private String Address_State;
+    private String Address_ZipCode;
+    private String Address_Country;
     private Integer Concurrency;
 
     public String getEntityName() {
@@ -40,44 +40,44 @@ public class Suppliers
         Name = _Name;
     }
 
-    public String getAddressStreet() {
-        return AddressStreet;
+    public String getAddress_Street() {
+        return Address_Street;
     }
 
-    public void setAddressStreet(String _AddressStreet) {
-        AddressStreet = _AddressStreet;
+    public void setAddress_Street(String _Address_Street) {
+        Address_Street = _Address_Street;
     }
 
-    public String getAddressCity() {
-        return AddressCity;
+    public String getAddress_City() {
+        return Address_City;
     }
 
-    public void setAddressCity(String _AddressCity) {
-        AddressCity = _AddressCity;
+    public void setAddress_City(String _Address_City) {
+        Address_City = _Address_City;
     }
 
-    public String getAddressState() {
-        return AddressState;
+    public String getAddress_State() {
+        return Address_State;
     }
 
-    public void setAddressState(String _AddressState) {
-        AddressState = _AddressState;
+    public void setAddress_State(String _Address_State) {
+        Address_State = _Address_State;
     }
 
-    public String getAddressZipCode() {
-        return AddressZipCode;
+    public String getAddress_ZipCode() {
+        return Address_ZipCode;
     }
 
-    public void setAddressZipCode(String _AddressZipCode) {
-        AddressZipCode = _AddressZipCode;
+    public void setAddress_ZipCode(String _Address_ZipCode) {
+        Address_ZipCode = _Address_ZipCode;
     }
 
-    public String getAddressCountry() {
-        return AddressCountry;
+    public String getAddress_Country() {
+        return Address_Country;
     }
 
-    public void setAddressCountry(String _AddressCountry) {
-        AddressCountry = _AddressCountry;
+    public void setAddress_Country(String _Address_Country) {
+        Address_Country = _Address_Country;
     }
 
     public Integer getConcurrency() {

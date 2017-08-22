@@ -1,0 +1,41 @@
+{
+	"ProductAPI": {
+		"entity": "Products",
+		"functions": [{
+				"name": "getProductByID",
+				"type": "getbyid"
+			},
+			{
+				"name": "getProductsWithPriceRange",
+				"type": "query",
+				"return": "iterator",
+				"filters": [{
+					"name":"minPrice",
+					"property": "UnitPrice",
+					"operator": "gt"
+				},
+				{ 
+					"name":"maxPrice",
+					"property": "UnitPrice",
+					"operator": "lt"
+				}]
+			},
+			{
+				"name": "getProductsWithName",
+				"type": "query",
+				"filters": [{
+					"property": "ProductName",
+					"operator": "eq"
+				}]
+			},{
+				"name": "getOrdersOfProduct",
+				"entity" : "Order_Details",
+				"type": "query",
+				"filters": [{
+					"property": "ProductID",
+					"operator": "eq"
+				}]
+			}
+		]
+	}
+}
