@@ -2,18 +2,41 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.doktorodata.ohdata</groupId>
-	<artifactId>OhData-Client</artifactId>
-	<version>0.8.0</version>
-	<name>OhData Client Library provided by Dr. OData</name>
+	<artifactId>ohdata-client</artifactId>
+	<version>0.9.5</version>
+	<name>Easy and Powerul OhData Client Library</name>
+	<developers>
+		<developer>
+			<name>Peter Helmich</name>
+			<email>dr.odata@aol.de</email>
+		</developer>
+	</developers>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<licenses>
+	    <license>
+	      <name>MIT License</name>
+	      <url>https://opensource.org/licenses/MIT</url>
+	      <distribution>repo</distribution>
+	    </license>
+	  </licenses>
+  
+	  <distributionManagement>
+	   <snapshotRepository>
+	      <id>ossrh</id>
+	      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+	   </snapshotRepository>	   
+	   <repository>
+	      <id>ossrh</id>
+	      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+	   </repository>
+	</distributionManagement>
 	
 	<build>
 		<finalName>${project.artifactId}</finalName>
-	
 		<plugins>
 	      <plugin>
 	        <groupId>org.apache.maven.plugins</groupId>
@@ -24,6 +47,60 @@
 	          <target>1.7</target>
 	        </configuration>
 	      </plugin>
+	      <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-source-plugin</artifactId>
+		      <version>2.2.1</version>
+		      <executions>
+		        <execution>
+		          <id>attach-sources</id>
+		          <goals>
+		            <goal>jar-no-fork</goal>
+		          </goals>
+		        </execution>
+		      </executions>
+		    </plugin>
+		    <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-javadoc-plugin</artifactId>
+		      <version>2.9.1</version>
+		      <executions>
+		        <execution>
+		          <id>attach-javadocs</id>
+		          <goals>
+		            <goal>jar</goal>
+		          </goals>
+		        </execution>
+		      </executions>
+		    </plugin>
+		    <plugin>
+      			<groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-gpg-plugin</artifactId>
+		      <version>1.5</version>
+		      <executions>
+		        <execution>
+		          <id>sign-artifacts</id>
+		          <phase>verify</phase>
+		          <goals>
+		            <goal>sign</goal>
+		          </goals>
+		          <configuration>
+		         	<keyname>AEEC542E</keyname>
+		          </configuration>
+		        </execution>
+		      </executions>
+		    </plugin>
+		    <plugin>
+		      <groupId>org.sonatype.plugins</groupId>
+		      <artifactId>nexus-staging-maven-plugin</artifactId>
+		      <version>1.6.7</version>
+		      <extensions>true</extensions>
+		      <configuration>
+		        <serverId>ossrh</serverId>
+		        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+		        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+		      </configuration>
+		    </plugin>
 	    </plugins>
 	</build> 
 
@@ -78,4 +155,14 @@
 
 	</dependencies>
 
+	<description>OhData is providing a powerful and easy to use oData client library leveraging Olingo as a foundation. </description>
+	<scm>
+		<url>https://github.com/doktorodata/OhData-Client.git</url>
+		<developerConnection>Peter Helmich</developerConnection>
+	</scm>
+	<organization>
+		<name>Peter Helmich</name>
+		<url>http://www.doktorodata.org</url>
+	</organization>
+	<url>http://www.doktorodata.org</url>
 </project>

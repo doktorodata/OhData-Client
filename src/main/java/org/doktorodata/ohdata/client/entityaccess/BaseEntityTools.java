@@ -1,4 +1,4 @@
-package org.doktorodata.ohdata.client.entityaccess.model;
+package org.doktorodata.ohdata.client.entityaccess;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.GregorianCalendar;
 
+import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
 import org.doktorodata.ohdata.client.exceptions.StubGenerationException;
 import org.json.JSONObject;
 
@@ -96,7 +97,9 @@ public class BaseEntityTools {
 		}  else if(jsonTypeName.contains("DateTime")){
 			typeClz = GregorianCalendar.class;
 		}  else if(jsonTypeName.contains("Decimal")){
-			typeClz = BigDecimal.class;
+			typeClz = BigDecimal.class;		
+		}  else if(jsonTypeName.contains("Double")){
+			typeClz = Double.class;
 		}  else if(jsonTypeName.contains("Int16")){
 			typeClz = Short.class;
 		}  else if(jsonTypeName.contains("Binary")){

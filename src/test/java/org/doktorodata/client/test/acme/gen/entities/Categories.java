@@ -2,8 +2,9 @@
 package org.doktorodata.client.test.acme.gen.entities;
 
 import javax.annotation.Generated;
+
+import org.doktorodata.ohdata.client.entityaccess.BaseEntityTools;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
-import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
 
 @Generated("DoktorOData - OhData-Client")
 public class Categories

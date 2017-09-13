@@ -16,8 +16,8 @@ import org.apache.olingo.odata2.api.edm.EdmStructuralType;
 import org.apache.olingo.odata2.api.edm.EdmTypeKind;
 import org.apache.olingo.odata2.api.edm.EdmTyped;
 import org.doktorodata.ohdata.client.base.OhCaller;
+import org.doktorodata.ohdata.client.entityaccess.BaseEntityTools;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
-import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
 import org.doktorodata.ohdata.client.exceptions.ConnectionFactoryException;
 import org.doktorodata.ohdata.client.exceptions.OhDataCallException;
 import org.doktorodata.ohdata.client.exceptions.StubGenerationException;
@@ -40,17 +40,26 @@ import com.sun.codemodel.JVar;
  */
 public class EntityStubGenerator {
 
+	public interface ClassNameCorrector {
+		public String correctClassname(String classname);
+	}
+	
 	public static final String SUB_PACKAGE = "entities";
 	
 	private String localFolder;
 	private String basePackage;
 	private String destination;
+	private ClassNameCorrector corrector = null;
 	private String[] entitiesToGen = null;
 
 	public EntityStubGenerator(String basePackage, String destination) {
 		this.localFolder = ".";
 		this.basePackage = basePackage;
 		this.destination = destination;
+	}
+	
+	public void setClassNameCorrector(ClassNameCorrector corrector){
+		this.corrector = corrector;
 	}
 
 	public EntityStubGenerator(String basePackage, String destination, String localFolder) {
@@ -98,17 +107,17 @@ public class EntityStubGenerator {
 			
 			//Start creating the file
 				String className =  firstUpper(simpleName);
+				
+				if(corrector != null){
+					className = corrector.correctClassname(className);
+				}
+				
 				JDefinedClass clz = cm._class(fullPackage + "." + className);
 				clz.annotate(Generated.class).param("value", "DoktorOData - OhData-Client");
 				clz._extends(BaseEntity.class);
 				
-				//JFieldVar fieldCtx = clz.field(JMod.STATIC, String.class, "_CONTEXT", JExpr.lit(subPackage));
 				JFieldVar fieldEntity = clz.field(JMod.STATIC | JMod.PUBLIC, String.class, "_ENTITY_NAME", JExpr.lit(entity.getName()));
-				//JFieldVar fieldFullEn = clz.field(JMod.STATIC, String.class, "_FULL_ENTITY_NAME", JExpr.lit(simpleName));
-
-				//clz.method(JMod.PUBLIC, String.class, "getContext").body()._return(fieldCtx);
 				clz.method(JMod.PUBLIC, String.class, "getEntityName").body()._return(fieldEntity);
-				//clz.method(JMod.PUBLIC, String.class, "getFullEntityName").body()._return(fieldFullEn);
 			
 				//Keep the properties
 				HashMap<String, JFieldVar> propFields = new HashMap<String, JFieldVar>();

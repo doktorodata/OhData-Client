@@ -22,6 +22,7 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 public class EntityGenerationTest {
 
 	private static final String basePackage = "test.entitygen";
+	private static final String basePackagePath = "test/entitygen";
 	private static final String basePath = "./src/test/java";
 	private static final String destination = "src/test/resources/Northwind.destination";
 	private static final String[] entitiesToCheck = {"Products", "Customers"};
@@ -35,7 +36,7 @@ public class EntityGenerationTest {
 	
 	@Test
 	public void checkGeneratedFiles(){
-		String genFolder = basePath + File.separator + basePackage.replaceAll("\\.", File.separator);
+		String genFolder = basePath + File.separator + basePackagePath;
 		String entityFolder = genFolder + File.separator + "entities"; 
 		File folder = new File(entityFolder);
 		
@@ -63,7 +64,7 @@ public class EntityGenerationTest {
 	
 	@After
 	public void cleanup() throws IOException{
-		String cleanUpFolder = basePath + File.separator + basePackage.replaceAll("\\.", File.separator);
+		String cleanUpFolder = basePath + File.separator + basePackagePath;
 		File folder = new File(cleanUpFolder);
 		deleteFolder(folder);
 		System.out.println("Cleanup successfull");

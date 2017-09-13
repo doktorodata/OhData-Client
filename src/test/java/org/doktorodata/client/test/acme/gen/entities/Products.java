@@ -3,9 +3,11 @@ package org.doktorodata.client.test.acme.gen.entities;
 
 import java.math.BigDecimal;
 import java.util.GregorianCalendar;
+
 import javax.annotation.Generated;
+
+import org.doktorodata.ohdata.client.entityaccess.BaseEntityTools;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
-import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
 
 @Generated("DoktorOData - OhData-Client")
 public class Products

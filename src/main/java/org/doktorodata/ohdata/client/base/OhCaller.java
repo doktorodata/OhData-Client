@@ -150,7 +150,6 @@ public class OhCaller {
 				connection.disconnect();
 				return new OhResult(false, OhResult.STATUS_ERROR_NOT_FOUND);
 			} else {
-				connection.disconnect();
 				throw handleConnectionError(connection,
 						"HTTP Error Code " + connection.getResponseCode() + " " + connection.getResponseMessage());
 			}
@@ -192,7 +191,6 @@ public class OhCaller {
 				connection.disconnect();
 				return new OhResult(false, OhResult.STATUS_ERROR_NOT_FOUND);
 			} else {
-				connection.disconnect();
 				throw handleConnectionError(connection,
 						"HTTP Error Code " + connection.getResponseCode() + " " + connection.getResponseMessage());
 			}
@@ -396,9 +394,10 @@ public class OhCaller {
 	private OhDataCallException handleConnectionError(HttpURLConnection connection, String outsideErrorText)
 			throws IOException {
 		String errorText = getErrornousConnectionMessage(connection);
-		
-		return new OhDataCallException(outsideErrorText + " " + connection.getResponseCode() + " "
-				+ connection.getResponseMessage() + " with error details " + errorText);
+		String fullError = outsideErrorText + " " + connection.getResponseCode() + " "
+				+ connection.getResponseMessage() + " with error details " + errorText;
+		connection.disconnect();
+		return new OhDataCallException(fullError);
 	}
 
 	private String createUri(String serviceUri, String entitySetName, Object id) throws UnsupportedEncodingException {
@@ -464,7 +463,6 @@ public class OhCaller {
 				conn.disconnect();
 				return response;
 			} else {
-				conn.disconnect();
 				throw handleConnectionError(conn,
 						"HTTP Error Code " + conn.getResponseCode() + " " + conn.getResponseMessage());
 			}
