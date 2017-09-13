@@ -2,9 +2,11 @@
 package org.doktorodata.client.test.northwind.gen.entities;
 
 import java.math.BigDecimal;
+
 import javax.annotation.Generated;
+
+import org.doktorodata.ohdata.client.entityaccess.BaseEntityTools;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
-import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
 
 @Generated("DoktorOData - OhData-Client")
 public class Products

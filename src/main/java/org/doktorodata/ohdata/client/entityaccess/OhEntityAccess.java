@@ -13,7 +13,6 @@ import org.doktorodata.ohdata.client.base.OhCallerFactory;
 import org.doktorodata.ohdata.client.base.OhQuery;
 import org.doktorodata.ohdata.client.base.OhResult;
 import org.doktorodata.ohdata.client.entityaccess.model.BaseEntity;
-import org.doktorodata.ohdata.client.entityaccess.model.BaseEntityTools;
 import org.doktorodata.ohdata.client.exceptions.OhDataCallException;
 import org.doktorodata.ohdata.client.exceptions.OhEntityAccessException;
 import org.json.JSONObject;
@@ -55,6 +54,7 @@ public class OhEntityAccess<T extends BaseEntity> {
 				List<ODataEntry> odEntries = feed.getEntries();
 				for (ODataEntry odEntry : odEntries) {
 					T newEntry = mapEntity(odEntry);
+					newEntry._setOdataEntry(odEntry);
 					entries.add(newEntry);			
 				}
 				
@@ -85,7 +85,9 @@ public class OhEntityAccess<T extends BaseEntity> {
 			if(readResult.isSuccess()){
 				ODataEntry odEntry = readResult.getEntry();				
 				T newEntry = mapEntity(odEntry); 
+				newEntry._setOdataEntry(odEntry);
 				result.setEntry(newEntry);
+				
 			}
 			
 			return result;		
