@@ -165,4 +165,9 @@
 		<url>http://www.doktorodata.org</url>
 	</organization>
 	<url>http://www.doktorodata.org</url>
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/doktorodata/OhData-Client/issues</url>
+	</issueManagement>
+	
 </project>

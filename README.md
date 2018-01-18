@@ -16,7 +16,7 @@ Add maven dependency to your POM.
 <dependency>
 	<groupId>org.doktorodata.ohdata</groupId>
 	<artifactId>OhData-Client</artifactId>
-	<version>0.8.0</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 ### Add a destination file
