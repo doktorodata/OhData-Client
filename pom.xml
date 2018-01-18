@@ -7,7 +7,7 @@
 	<name>Easy and Powerul OhData Client Library</name>
 	<developers>
 		<developer>
-			<name>Peter Helmich</name>
+			<name>Michael Dietz</name>
 			<email>dr.odata@aol.de</email>
 		</developer>
 	</developers>
@@ -158,10 +158,10 @@
 	<description>OhData is providing a powerful and easy to use oData client library leveraging Olingo as a foundation. </description>
 	<scm>
 		<url>https://github.com/doktorodata/OhData-Client.git</url>
-		<developerConnection>Peter Helmich</developerConnection>
+		<developerConnection>Michael Dietz</developerConnection>
 	</scm>
 	<organization>
-		<name>Peter Helmich</name>
+		<name>Michael Dietz</name>
 		<url>http://www.doktorodata.org</url>
 	</organization>
 	<url>http://www.doktorodata.org</url>
