@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.doktorodata.ohdata</groupId>
 	<artifactId>ohdata-client</artifactId>
-	<version>0.9.5</version>
+	<version>1.0.0</version>
 	<name>Easy and Powerul OhData Client Library</name>
 	<developers>
 		<developer>
